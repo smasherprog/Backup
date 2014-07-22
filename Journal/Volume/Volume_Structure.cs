@@ -10,6 +10,7 @@ namespace Journal
     public class Volume_Structure: Journal.Volume.IFile
     {
         private Dictionary<UInt64, Journal.Volume.IFile> Lookup;
+
         private List<Journal.Volume.IFile> _TopLevel;
         public List<Journal.Volume.IFile> Children { get { return _TopLevel; } set{ _TopLevel = value;} }
         public Journal.Volume.IFile Parent { get { return null; } set {  } }
@@ -23,6 +24,7 @@ namespace Journal
             Lookup = new Dictionary<ulong, Journal.Volume.IFile>();
             _TopLevel = new List<Volume.IFile>();
             _Name = name;
+
         }
         public void Add(Win32Api.UsnEntry u)
         {
@@ -55,7 +57,6 @@ namespace Journal
             int filecounter = 0;
             foreach(var item in Lookup)
             {
-  
                 var file = (Journal.Volume.File)item.Value;
                 if(file.Entry.IsFile)
                     filecounter += 1;

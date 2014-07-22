@@ -19,17 +19,16 @@ namespace BackUp
             InitializeComponent();
         }
 
-
-        private void startToolStripMenuItem_Click(object sender, EventArgs e)
+        private void selectDriveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var s = new Select_Drive(driveselected);
+            var s = new Select_Drive(Selected_Drive);
             s.ShowDialog(this);
         }
-        private void driveselected(string path)
+        private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
+
             try
             {
-                NtfsJournal = Journal.Journal_Factory.Create(path);
                 NtfsJournal.BuildDriveMapping();
                 Debug.WriteLine("Drive mapping built");
 
@@ -37,12 +36,25 @@ namespace BackUp
             {
                 Debug.WriteLine(ee.Message);
             }
-            TreeNode rootNode = new TreeNode(path);
+            TreeNode rootNode = new TreeNode(NtfsJournal.RootDirectory.Name);
             rootNode.Tag = NtfsJournal._Volume_Structure;
             GetDirs(NtfsJournal._Volume_Structure.Children, rootNode);
             treeView1.Nodes.Add(rootNode);
 
+            var s = new Select_Drive(Selected_Drive);
+            s.ShowDialog(this);
         }
+        private void Selected_Drive(string path)
+        {
+            try
+            {
+                NtfsJournal = Journal.Journal_Factory.Create(path);
+            } catch(Exception ee)
+            {
+                Debug.WriteLine(ee.Message);
+            }
+        }
+
         private void GetDirs(List<Journal.Volume.IFile> files, TreeNode n)
         {
             TreeNode aNode;
@@ -94,6 +106,24 @@ namespace BackUp
 
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
+
+        private void begToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(NtfsJournal == null)
+                MessageBox.Show("You have not selected a drive yet.");
+            else 
+                NtfsJournal.Begin();
+        }
+
+        private void endToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(NtfsJournal == null)
+                MessageBox.Show("You have not selected a drive yet.");
+            else 
+                NtfsJournal.End();
+        }
+
+
 
     }
 }

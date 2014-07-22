@@ -477,7 +477,9 @@ namespace Journal
                 _fileAttributes = (UInt32)Marshal.ReadInt32(ptrToUsnRecord, FA_OFFSET);
                 short fileNameLength = Marshal.ReadInt16(ptrToUsnRecord, FNL_OFFSET);
                 short fileNameOffset = Marshal.ReadInt16(ptrToUsnRecord, FN_OFFSET);
-                Name = Marshal.PtrToStringUni(new IntPtr(ptrToUsnRecord.ToInt32() + fileNameOffset), fileNameLength / sizeof(char));
+                var ptr_to_name = System.IntPtr.Add(ptrToUsnRecord, fileNameOffset);
+
+                Name = Marshal.PtrToStringUni(ptr_to_name, fileNameLength / sizeof(char));
             }
         }
 

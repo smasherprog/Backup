@@ -41,6 +41,9 @@
             this.FolderCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.FileCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.begToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.endToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.selectDriveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -61,6 +64,9 @@
             // functionsToolStripMenuItem
             // 
             this.functionsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.selectDriveToolStripMenuItem,
+            this.begToolStripMenuItem,
+            this.endToolStripMenuItem,
             this.startToolStripMenuItem});
             this.functionsToolStripMenuItem.Name = "functionsToolStripMenuItem";
             this.functionsToolStripMenuItem.Size = new System.Drawing.Size(71, 20);
@@ -70,7 +76,7 @@
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
             this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.startToolStripMenuItem.Text = "Start";
+            this.startToolStripMenuItem.Text = "Build";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // splitContainer1
@@ -144,6 +150,27 @@
             // 
             this.Type.Text = "Type";
             // 
+            // begToolStripMenuItem
+            // 
+            this.begToolStripMenuItem.Name = "begToolStripMenuItem";
+            this.begToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.begToolStripMenuItem.Text = "Beg";
+            this.begToolStripMenuItem.Click += new System.EventHandler(this.begToolStripMenuItem_Click);
+            // 
+            // endToolStripMenuItem
+            // 
+            this.endToolStripMenuItem.Name = "endToolStripMenuItem";
+            this.endToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.endToolStripMenuItem.Text = "End";
+            this.endToolStripMenuItem.Click += new System.EventHandler(this.endToolStripMenuItem_Click);
+            // 
+            // selectDriveToolStripMenuItem
+            // 
+            this.selectDriveToolStripMenuItem.Name = "selectDriveToolStripMenuItem";
+            this.selectDriveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectDriveToolStripMenuItem.Text = "Select Drive";
+            this.selectDriveToolStripMenuItem.Click += new System.EventHandler(this.selectDriveToolStripMenuItem_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -178,6 +205,9 @@
         private System.Windows.Forms.ColumnHeader FolderCount;
         private System.Windows.Forms.ColumnHeader FileCount;
         private System.Windows.Forms.ColumnHeader Type;
+        private System.Windows.Forms.ToolStripMenuItem begToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem selectDriveToolStripMenuItem;
     }
 }
 
