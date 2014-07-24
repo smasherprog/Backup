@@ -25,12 +25,12 @@ namespace Journal
             if(driveInfo == null)
                 throw new Exception("The drive " + drive + " is not a valid drive.");
 
-            //if(driveInfo.DriveFormat.ToLower().Contains("ntfs"))
-            //{
-            //    Raw_File_Handle rootHandle = null;
-            //    GetRootHandle(out rootHandle, driveInfo);
-            //    return new NTFSVolume(driveInfo, rootHandle);
-            //} else
+            if(driveInfo.DriveFormat.ToLower().Contains("ntfs"))
+            {
+                Raw_File_Handle rootHandle = null;
+                GetRootHandle(out rootHandle, driveInfo);
+                return new NTFSVolume(driveInfo, rootHandle);
+            } else
                 return new Fat32Volume(driveInfo);
            
         }
