@@ -13,12 +13,16 @@ namespace BackUp
 {
     public partial class Form1 : Form
     {
-        Journal.NtfsUsnJournal NtfsJournal;
+        Journal.Interfaces.IVolume _Volume;
         public Form1()
         {
             InitializeComponent();
         }
-
+        private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
+        {
+            if(_Volume != null)
+                _Volume.Dispose();
+        }
         private void selectDriveToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var s = new Select_Drive(Selected_Drive);
@@ -26,33 +30,22 @@ namespace BackUp
         }
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
-            try
-            {
-                NtfsJournal.BuildDriveMapping();
-                Debug.WriteLine("Drive mapping built");
-
-            } catch(Exception ee)
-            {
-                Debug.WriteLine(ee.Message);
-            }
-            TreeNode rootNode = new TreeNode(NtfsJournal.RootDirectory.Name);
-            rootNode.Tag = NtfsJournal._Volume_Structure;
-            GetDirs(NtfsJournal._Volume_Structure.Children, rootNode);
+            _Volume.Map_Volume();
+            TreeNode rootNode = new TreeNode(_Volume.Drive.Name);
+            rootNode.Tag = _Volume.Root;
+            GetDirs(_Volume.Root.Children, rootNode);
             treeView1.Nodes.Add(rootNode);
-
-            var s = new Select_Drive(Selected_Drive);
-            s.ShowDialog(this);
         }
         private void Selected_Drive(string path)
         {
             try
             {
-                NtfsJournal = Journal.Journal_Factory.Create(path);
-            } catch(Exception ee)
+                _Volume = Journal.Journal_Factory.Create(path);
+            } catch(Exception e)
             {
-                Debug.WriteLine(ee.Message);
+                MessageBox.Show(e.Message);
             }
+           
         }
 
         private void GetDirs(List<Journal.Volume.IFile> files, TreeNode n)
@@ -79,7 +72,7 @@ namespace BackUp
             ListViewItem.ListViewSubItem[] subItems;
             ListViewItem item = null;
 
-            foreach(var dir in nodeDirInfo.Children.Where(a=>a.IsFolder()))
+            foreach(var dir in nodeDirInfo.Children.Where(a => a.IsFolder()))
             {
                 item = new ListViewItem(dir.Name(), 0);
                 subItems = new ListViewItem.ListViewSubItem[]
@@ -109,18 +102,18 @@ namespace BackUp
 
         private void begToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(NtfsJournal == null)
-                MessageBox.Show("You have not selected a drive yet.");
-            else 
-                NtfsJournal.Begin();
+            //if(NtfsJournal == null)
+            //    MessageBox.Show("You have not selected a drive yet.");
+            //else
+            //    NtfsJournal.Begin();
         }
 
         private void endToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(NtfsJournal == null)
-                MessageBox.Show("You have not selected a drive yet.");
-            else 
-                NtfsJournal.End();
+            //if(NtfsJournal == null)
+            //    MessageBox.Show("You have not selected a drive yet.");
+            //else
+            //    NtfsJournal.End();
         }
 
 

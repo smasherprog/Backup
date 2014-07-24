@@ -10,7 +10,7 @@ namespace Journal.Volume
     {
         string Name();
         IFile Parent { get; set; }
-        List<IFile> Children { get; set; }
+        List<IFile> Children { get; }
         bool IsFile();
         bool IsFolder();
         int FileCount();

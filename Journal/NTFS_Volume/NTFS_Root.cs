@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Journal
 {
-    public class Volume_Structure: Journal.Volume.IFile
+    public class NTFS_Root: Journal.Volume.IFile
     {
         private Dictionary<UInt64, Journal.Volume.IFile> Lookup;
 
@@ -17,9 +17,9 @@ namespace Journal
         private string _Name;
         public string Name() { return _Name; } 
         public bool IsFile(){ return false; } 
-        public bool IsFolder(){ return true; } 
+        public bool IsFolder(){ return true; }
 
-        public Volume_Structure(string name)
+        public NTFS_Root(string name)
         {
             Lookup = new Dictionary<ulong, Journal.Volume.IFile>();
             _TopLevel = new List<Volume.IFile>();
@@ -28,8 +28,7 @@ namespace Journal
         }
         public void Add(Win32Api.UsnEntry u)
         {
-    
-            Lookup.Add(u.FileReferenceNumber, new Journal.Volume.File(u));
+            Lookup.Add(u.FileReferenceNumber, new Journal.Volume.NTFS_File(u));
         }
         public int FileCount()
         {
@@ -57,7 +56,7 @@ namespace Journal
             int filecounter = 0;
             foreach(var item in Lookup)
             {
-                var file = (Journal.Volume.File)item.Value;
+                var file = (Journal.Volume.NTFS_File)item.Value;
                 if(file.Entry.IsFile)
                     filecounter += 1;
                 else

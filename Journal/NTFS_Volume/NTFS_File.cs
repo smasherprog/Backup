@@ -7,20 +7,21 @@ using System.Threading.Tasks;
 namespace Journal.Volume
 {
 
-    public class File : IFile
+    public class NTFS_File : IFile
     {
         public Win32Api.UsnEntry Entry { get; set; }
         private IFile _Parent;
         public IFile Parent { get { return _Parent; } set { _Parent = value; } }
-        public List<IFile> Children { get; set; }
+        private List<IFile> _Children;
+        public List<IFile> Children { get { return _Children; } }
         private int _FileCount = -1;
         private int _FolderCount = -1;
         public bool IsFile() { return Entry.IsFile; }
         public bool IsFolder() { return Entry.IsFolder; }
-        public File(Win32Api.UsnEntry u)
+        public NTFS_File(Win32Api.UsnEntry u)
         {
             Entry = u;
-            Children = new List<IFile>();
+            _Children = new List<IFile>();
             Parent = null;
         }
         public string Name(){ return Entry.Name; } 

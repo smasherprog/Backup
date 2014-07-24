@@ -39,17 +39,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Handle.cs" />
+    <Compile Include="Fat32\Fat32_Directory.cs" />
+    <Compile Include="Fat32\Fat32_File.cs" />
+    <Compile Include="Fat32\Fat32_Volume.cs" />
+    <Compile Include="Utilities\Handle.cs" />
+    <Compile Include="Interfaces\IVolume.cs" />
     <Compile Include="Journal_Factory.cs" />
-    <Compile Include="NtfsUsnJournal.cs" />
+    <Compile Include="NTFS_Volume\NTFS_Volume.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Raw_Wrapper.cs" />
-    <Compile Include="Struct_Wrapper.cs" />
-    <Compile Include="Volume\File.cs" />
-    <Compile Include="Volume\IFile.cs" />
-    <Compile Include="Volume\Volume_Structure.cs" />
-    <Compile Include="Win32.cs" />
+    <Compile Include="Utilities\Raw_Wrapper.cs" />
+    <Compile Include="Utilities\Struct_Wrapper.cs" />
+    <Compile Include="NTFS_Volume\NTFS_File.cs" />
+    <Compile Include="Interfaces\IFile.cs" />
+    <Compile Include="NTFS_Volume\NTFS_Root.cs" />
+    <Compile Include="Utilities\Win32.cs" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
