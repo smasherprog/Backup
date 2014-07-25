@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -17,18 +18,19 @@ namespace Journal
         private DriveInfo _DriveInfo;
         public System.IO.DriveInfo Drive { get { return _DriveInfo; } }
 
-        private Raw_File_Handle _Root_Handle;
+        private SafeFileHandle _Root_Handle;
         private NTFS_Root _Volume_Structure;
         public Journal.Volume.IFile Root { get { return _Volume_Structure; } }
 
         private Win32Api.USN_JOURNAL_DATA _Current_JournalState;
         //private Win32Api.USN_JOURNAL_DATA _Last_JournalState;
 
-        public NTFSVolume(DriveInfo rootpath, Raw_File_Handle root)
+        public NTFSVolume(DriveInfo rootpath, SafeFileHandle root)
         {
             _DriveInfo = rootpath;
             _Root_Handle = root;
             _Volume_Structure = new NTFS_Root(rootpath.Name);
+          
         }
         public void Map_Volume()
         {
@@ -47,7 +49,7 @@ namespace Journal
                 uint outBytesReturned = 0;
 
                 while(Win32Api.DeviceIoControl(
-                    _Root_Handle.Handle,
+                    _Root_Handle.DangerousGetHandle(),
                     Win32Api.FSCTL_ENUM_USN_DATA,
                     med_struct.Ptr,
                     med_struct.Size,
@@ -82,7 +84,7 @@ namespace Journal
             int sizeUsnJournalState = Marshal.SizeOf(usnJournalState);
             UInt32 cb;
             if(!Win32Api.DeviceIoControl(
-                  _Root_Handle.Handle,
+                   _Root_Handle.DangerousGetHandle(),
                   Win32Api.FSCTL_QUERY_USN_JOURNAL,
                   IntPtr.Zero,
                   0,
@@ -122,7 +124,7 @@ namespace Journal
                 uint outBytesReturned = 0;
                 var nextusn = previousUsnState.NextUsn;
                 while(nextusn < newUsnState.NextUsn && Win32Api.DeviceIoControl(
-                        _Root_Handle.Handle,
+                         _Root_Handle.DangerousGetHandle(),
                         Win32Api.FSCTL_READ_USN_JOURNAL,
                         med_struct.Ptr,
                         med_struct.Size,

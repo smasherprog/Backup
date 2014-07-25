@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32.SafeHandles;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,36 +12,6 @@ namespace Journal
     public static class Win32Api
     {
 
-        public enum UsnReasonCode
-        {
-            USN_REASON_DATA_OVERWRITE = 0x00000001,
-            USN_REASON_DATA_EXTEND = 0x00000002,
-            USN_REASON_DATA_TRUNCATION = 0x00000004,
-            USN_REASON_NAMED_DATA_OVERWRITE = 0x00000010,
-            USN_REASON_NAMED_DATA_EXTEND = 0x00000020,
-            USN_REASON_NAMED_DATA_TRUNCATION = 0x00000040,
-            USN_REASON_FILE_CREATE = 0x00000100,
-            USN_REASON_FILE_DELETE = 0x00000200,
-            USN_REASON_EA_CHANGE = 0x00000400,
-            USN_REASON_SECURITY_CHANGE = 0x00000800,
-            USN_REASON_RENAME_OLD_NAME = 0x00001000,
-            USN_REASON_RENAME_NEW_NAME = 0x00002000,
-            USN_REASON_INDEXABLE_CHANGE = 0x00004000,
-            USN_REASON_BASIC_INFO_CHANGE = 0x00008000,
-            USN_REASON_HARD_LINK_CHANGE = 0x00010000,
-            USN_REASON_COMPRESSION_CHANGE = 0x00020000,
-            USN_REASON_ENCRYPTION_CHANGE = 0x00040000,
-            USN_REASON_OBJECT_ID_CHANGE = 0x00080000,
-            USN_REASON_REPARSE_POINT_CHANGE = 0x00100000,
-            USN_REASON_STREAM_CHANGE = 0x00200000,
-            USN_REASON_CLOSE = -1
-        }
-
-        public enum UsnJournalDeleteFlags
-        {
-            USN_DELETE_FLAG_DELETE = 1,
-            USN_DELETE_FLAG_NOTIFY = 2
-        }
 
         public enum FILE_INFORMATION_CLASS
         {
@@ -89,7 +60,6 @@ namespace Journal
 
 
 
-        public const Int32 INVALID_HANDLE_VALUE = -1;
 
         public const UInt32 GENERIC_READ = 0x80000000;
         public const UInt32 GENERIC_WRITE = 0x40000000;
@@ -110,9 +80,7 @@ namespace Journal
         public const UInt32 FILE_OPEN_BY_FILE_ID = 0x2000;
         public const UInt32 FILE_OPEN = 0x1;
         public const UInt32 OBJ_CASE_INSENSITIVE = 0x40;
-        //public const OBJ_KERNEL_HANDLE = 0x200;
 
-        // CTL_CODE( DeviceType, Function, Method, Access ) (((DeviceType) << 16) | ((Access) << 14) | ((Function) << 2) | (Method))
         private const UInt32 FILE_DEVICE_FILE_SYSTEM = 0x00000009;
         private const UInt32 METHOD_NEITHER = 3;
         private const UInt32 METHOD_BUFFERED = 0;
@@ -143,43 +111,15 @@ namespace Journal
         public const UInt32 USN_REASON_STREAM_CHANGE = 0x00200000;
         public const UInt32 USN_REASON_CLOSE = 0x80000000;
 
-        public static Int32 GWL_EXSTYLE = -20;
-        public static Int32 WS_EX_LAYERED = 0x00080000;
-        public static Int32 WS_EX_TRANSPARENT = 0x00000020;
-
         public const UInt32 FSCTL_GET_OBJECT_ID = 0x9009c;
-
-        // FSCTL_ENUM_USN_DATA = CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 44,  METHOD_NEITHER, FILE_ANY_ACCESS)
         public const UInt32 FSCTL_ENUM_USN_DATA = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) | (44 << 2) | METHOD_NEITHER;
-
-        // FSCTL_READ_USN_JOURNAL = CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 46,  METHOD_NEITHER, FILE_ANY_ACCESS)
         public const UInt32 FSCTL_READ_USN_JOURNAL = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) | (46 << 2) | METHOD_NEITHER;
-
-        //  FSCTL_CREATE_USN_JOURNAL        CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 57,  METHOD_NEITHER, FILE_ANY_ACCESS)
         public const UInt32 FSCTL_CREATE_USN_JOURNAL = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) | (57 << 2) | METHOD_NEITHER;
-
-        //  FSCTL_QUERY_USN_JOURNAL         CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 61, METHOD_BUFFERED, FILE_ANY_ACCESS)
         public const UInt32 FSCTL_QUERY_USN_JOURNAL = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) | (61 << 2) | METHOD_BUFFERED;
-
-        // FSCTL_DELETE_USN_JOURNAL        CTL_CODE(FILE_DEVICE_FILE_SYSTEM, 62, METHOD_BUFFERED, FILE_ANY_ACCESS)
         public const UInt32 FSCTL_DELETE_USN_JOURNAL = (FILE_DEVICE_FILE_SYSTEM << 16) | (FILE_ANY_ACCESS << 14) | (62 << 2) | METHOD_BUFFERED;
 
-
-        /// <summary>
-        /// Creates the file specified by 'lpFileName' with desired access, share mode, security attributes,
-        /// creation disposition, flags and attributes.
-        /// </summary>
-        /// <param name="lpFileName">Fully qualified path to a file</param>
-        /// <param name="dwDesiredAccess">Requested access (write, read, read/write, none)</param>
-        /// <param name="dwShareMode">Share mode (read, write, read/write, delete, all, none)</param>
-        /// <param name="lpSecurityAttributes">IntPtr to a 'SECURITY_ATTRIBUTES' structure</param>
-        /// <param name="dwCreationDisposition">Action to take on file or device specified by 'lpFileName' (CREATE_NEW,
-        /// CREATE_ALWAYS, OPEN_ALWAYS, OPEN_EXISTING, TRUNCATE_EXISTING)</param>
-        /// <param name="dwFlagsAndAttributes">File or device attributes and flags (typically FILE_ATTRIBUTE_NORMAL)</param>
-        /// <param name="hTemplateFile">IntPtr to a valid handle to a template file with 'GENERIC_READ' access right</param>
-        /// <returns>IntPtr handle to the 'lpFileName' file or device or 'INVALID_HANDLE_VALUE'</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
-        public static extern IntPtr
+        public static extern SafeFileHandle
             CreateFile(string lpFileName,
             uint dwDesiredAccess,
             uint dwShareMode,
@@ -188,23 +128,7 @@ namespace Journal
             uint dwFlagsAndAttributes,
             IntPtr hTemplateFile);
 
-        /// <summary>
-        /// Closes the file specified by the IntPtr 'hObject'.
-        /// </summary>
-        /// <param name="hObject">IntPtr handle to a file</param>
-        /// <returns>'true' if successful, otherwise 'false'</returns>
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool
-            CloseHandle(
-            IntPtr hObject);
 
-        /// <summary>
-        /// Fills the 'BY_HANDLE_FILE_INFORMATION' structure for the file specified by 'hFile'.
-        /// </summary>
-        /// <param name="hFile">Fully qualified name of a file</param>
-        /// <param name="lpFileInformation">Out BY_HANDLE_FILE_INFORMATION argument</param>
-        /// <returns>'true' if successful, otherwise 'false'</returns>
         [DllImport("kernel32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool
@@ -212,18 +136,6 @@ namespace Journal
             IntPtr hFile,
             out BY_HANDLE_FILE_INFORMATION lpFileInformation);
 
-        /// <summary>
-        /// Sends the 'dwIoControlCode' to the device specified by 'hDevice'.
-        /// </summary>
-        /// <param name="hDevice">IntPtr handle to the device to receive 'dwIoControlCode'</param>
-        /// <param name="dwIoControlCode">Device IO Control Code to send</param>
-        /// <param name="lpInBuffer">Input buffer if required</param>
-        /// <param name="nInBufferSize">Size of input buffer</param>
-        /// <param name="lpOutBuffer">Output buffer if required</param>
-        /// <param name="nOutBufferSize">Size of output buffer</param>
-        /// <param name="lpBytesReturned">Number of bytes returned in output buffer</param>
-        /// <param name="lpOverlapped">IntPtr to an 'OVERLAPPED' structure</param>
-        /// <returns>'true' if successful, otherwise 'false'</returns>
         [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeviceIoControl(
@@ -236,26 +148,9 @@ namespace Journal
             out uint lpBytesReturned,
             IntPtr lpOverlapped);
 
-        /// <summary>
-        /// Sets the number of bytes specified by 'size' of the memory associated with the argument 'ptr' 
-        /// to zero.
-        /// </summary>
-        /// <param name="ptr"></param>
-        /// <param name="size"></param>
         [DllImport("kernel32.dll")]
         public static extern void ZeroMemory(IntPtr ptr, int size);
-        /// <summary>
-        /// Sends the control code 'dwIoControlCode' to the device driver specified by 'hDevice'.
-        /// </summary>
-        /// <param name="hDevice">IntPtr handle to the device to receive 'dwIoControlCode</param>
-        /// <param name="dwIoControlCode">Device IO Control Code to send</param>
-        /// <param name="lpInBuffer">Input buffer if required</param>
-        /// <param name="nInBufferSize">Size of input buffer </param>
-        /// <param name="lpOutBuffer">Output buffer if required</param>
-        /// <param name="nOutBufferSize">Size of output buffer</param>
-        /// <param name="lpBytesReturned">Number of bytes returned</param>
-        /// <param name="lpOverlapped">Pointer to an 'OVERLAPPED' struture</param>
-        /// <returns></returns>
+
         [DllImport("kernel32.dll", ExactSpelling = true, SetLastError = true, CharSet = CharSet.Auto)]
         [return: MarshalAs(UnmanagedType.Bool)]
         public static extern bool DeviceIoControl(
@@ -269,22 +164,6 @@ namespace Journal
             IntPtr lpOverlapped);
 
 
-
-        /// <summary>
-        /// Creates a new file or directory, or opens an existing file, device, directory, or volume
-        /// </summary>
-        /// <param name="handle">A pointer to a variable that receives the file handle if the call is successful (out)</param>
-        /// <param name="access">ACCESS_MASK value that expresses the type of access that the caller requires to the file or directory (in)</param>
-        /// <param name="objectAttributes">A pointer to a structure already initialized with InitializeObjectAttributes (in)</param>
-        /// <param name="ioStatus">A pointer to a variable that receives the final completion status and information about the requested operation (out)</param>
-        /// <param name="allocSize">The initial allocation size in bytes for the file (in)(optional)</param>
-        /// <param name="fileAttributes">file attributes (in)</param>
-        /// <param name="share">type of share access that the caller would like to use in the file (in)</param>
-        /// <param name="createDisposition">what to do, depending on whether the file already exists (in)</param>
-        /// <param name="createOptions">options to be applied when creating or opening the file (in)</param>
-        /// <param name="eaBuffer">Pointer to an EA buffer used to pass extended attributes (in)</param>
-        /// <param name="eaLength">Length of the EA buffer</param>
-        /// <returns>either STATUS_SUCCESS or an appropriate error status. If it returns an error status, the caller can find more information about the cause of the failure by checking the IoStatusBlock</returns>
         [DllImport("ntdll.dll", ExactSpelling = true, SetLastError = true)]
         public static extern int NtCreateFile(
             out IntPtr handle,
@@ -299,15 +178,7 @@ namespace Journal
             IntPtr eaBuffer,
             uint eaLength);
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="fileHandle"></param>
-        /// <param name="IoStatusBlock"></param>
-        /// <param name="pInfoBlock"></param>
-        /// <param name="length"></param>
-        /// <param name="fileInformation"></param>
-        /// <returns></returns>
+
         [DllImport("ntdll.dll", ExactSpelling = true, SetLastError = true)]
         public static extern int NtQueryInformationFile(
             IntPtr fileHandle,
@@ -316,13 +187,6 @@ namespace Journal
             uint length,
             FILE_INFORMATION_CLASS fileInformation);
 
-
-        /// <summary>
-        /// By Handle File Information structure, contains File Attributes(32bits), Creation Time(FILETIME),
-        /// Last Access Time(FILETIME), Last Write Time(FILETIME), Volume Serial Number(32bits),
-        /// File Size High(32bits), File Size Low(32bits), Number of Links(32bits), File Index High(32bits),
-        /// File Index Low(32bits).
-        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct BY_HANDLE_FILE_INFORMATION
         {
@@ -338,10 +202,6 @@ namespace Journal
             public uint FileIndexLow;
         }
 
-        /// <summary>
-        /// USN Journal Data structure, contains USN Journal ID(64bits), First USN(64bits), Next USN(64bits),
-        /// Lowest Valid USN(64bits), Max USN(64bits), Maximum Size(64bits) and Allocation Delta(64bits).
-        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct USN_JOURNAL_DATA
         {
@@ -354,10 +214,7 @@ namespace Journal
             public UInt64 AllocationDelta;
 
         }
-        /// <summary>
-        /// MFT Enum Data structure, contains Start File Reference Number(64bits), Low USN(64bits),
-        /// High USN(64bits).
-        /// </summary>
+
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct MFT_ENUM_DATA
         {
@@ -366,9 +223,6 @@ namespace Journal
             public Int64 HighUsn;
         }
 
-        /// <summary>
-        /// Create USN Journal Data structure, contains Maximum Size(64bits) and Allocation Delta(64(bits).
-        /// </summary>
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct CREATE_USN_JOURNAL_DATA
         {
@@ -376,9 +230,7 @@ namespace Journal
             public UInt64 AllocationDelta;
         }
 
-        /// <summary>
-        /// Create USN Journal Data structure, contains Maximum Size(64bits) and Allocation Delta(64(bits).
-        /// </summary>
+
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct DELETE_USN_JOURNAL_DATA
         {
@@ -387,11 +239,6 @@ namespace Journal
             public UInt32 Reserved;
         }
 
-        /// <summary>
-        /// Contains the USN Record Length(32bits), USN(64bits), File Reference Number(64bits), 
-        /// Parent File Reference Number(64bits), Reason Code(32bits), File Attributes(32bits),
-        /// File Name Length(32bits), the File Name Offset(32bits) and the File Name.
-        /// </summary>
         public class UsnEntry
         {
             private const int FR_OFFSET = 8;
@@ -403,20 +250,20 @@ namespace Journal
             private const int FN_OFFSET = 58;
 
 
-            public UInt32 RecordLength {get; private set; }
- 
-            public Int64 USN{get; private set; }
-  
-            public UInt64 FileReferenceNumber{get; private set; }
- 
-            public UInt64 ParentFileReferenceNumber{get; private set; }
-    
-            public UInt32 Reason{get; private set; }
-            public string Name{get; private set; }
+            public UInt32 RecordLength { get; private set; }
+
+            public Int64 USN { get; private set; }
+
+            public UInt64 FileReferenceNumber { get; private set; }
+
+            public UInt64 ParentFileReferenceNumber { get; private set; }
+
+            public UInt32 Reason { get; private set; }
+            public string Name { get; private set; }
 
             private UInt32 _fileAttributes;
-            public bool IsFolder{ get{ return (_fileAttributes & FILE_ATTRIBUTE_DIRECTORY)!=0; } }
-            public bool IsFile { get{ return (_fileAttributes & FILE_ATTRIBUTE_DIRECTORY)==0; } }
+            public bool IsFolder { get { return (_fileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0; } }
+            public bool IsFile { get { return (_fileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0; } }
 
 
             /// <summary>
@@ -439,33 +286,7 @@ namespace Journal
             }
         }
 
-        /// <summary>
-        /// Contains the Start USN(64bits), Reason Mask(32bits), Return Only on Close flag(32bits),
-        /// Time Out(64bits), Bytes To Wait For(64bits), and USN Journal ID(64bits).
-        /// </summary>
-        /// <remarks> possible reason bits are from Win32Api
-        /// USN_REASON_DATA_OVERWRITE
-        /// USN_REASON_DATA_EXTEND
-        /// USN_REASON_DATA_TRUNCATION
-        /// USN_REASON_NAMED_DATA_OVERWRITE
-        /// USN_REASON_NAMED_DATA_EXTEND
-        /// USN_REASON_NAMED_DATA_TRUNCATION
-        /// USN_REASON_FILE_CREATE
-        /// USN_REASON_FILE_DELETE
-        /// USN_REASON_EA_CHANGE
-        /// USN_REASON_SECURITY_CHANGE
-        /// USN_REASON_RENAME_OLD_NAME
-        /// USN_REASON_RENAME_NEW_NAME
-        /// USN_REASON_INDEXABLE_CHANGE
-        /// USN_REASON_BASIC_INFO_CHANGE
-        /// USN_REASON_HARD_LINK_CHANGE
-        /// USN_REASON_COMPRESSION_CHANGE
-        /// USN_REASON_ENCRYPTION_CHANGE
-        /// USN_REASON_OBJECT_ID_CHANGE
-        /// USN_REASON_REPARSE_POINT_CHANGE
-        /// USN_REASON_STREAM_CHANGE
-        /// USN_REASON_CLOSE
-        /// </remarks>
+
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct READ_USN_JOURNAL_DATA
         {
@@ -503,6 +324,136 @@ namespace Journal
             public IntPtr Buffer;
 
         }
+
+        const int MAX_PATH = 260;
+        [StructLayout(LayoutKind.Sequential)]
+        public struct FILETIME
+        {
+            public uint dwLowDateTime;
+            public uint dwHighDateTime;
+        };
+
+
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+         public struct WIN32_FIND_DATA
+        {
+            public FileAttributes dwFileAttributes;
+            public FILETIME ftCreationTime;
+            public FILETIME ftLastAccessTime;
+            public FILETIME ftLastWriteTime;
+            public int nFileSizeHigh;
+            public int nFileSizeLow;
+            public int dwReserved0;
+            public int dwReserved1;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MAX_PATH)]
+            public string cFileName;
+            [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 14)]
+            public string cAlternate;
+
+        }
+
+
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        internal static extern SafeFileHandle FindFirstFile(string lpFileName, out WIN32_FIND_DATA lpFindFileData);
+        [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+        internal static extern bool FindNextFile(IntPtr hFindFile, out WIN32_FIND_DATA lpFindFileData);
+
+        public static SafeFileHandle Find_First_File(string filepath, out WIN32_FIND_DATA filedata)
+        {
+            if(string.IsNullOrWhiteSpace(filepath))
+                throw new ArgumentNullException("FilePath cannot be null!");
+            if(filepath[filepath.Length - 1] != '*')
+                filepath += "*";
+            if(filepath[filepath.Length - 2] != '\\')
+                filepath.Insert(filepath.Length - 2, "\\");
+
+            if(filepath.StartsWith(@"\\"))
+                filepath = @"\\?\UNC\" + filepath.Substring(2, filepath.Length - 2);
+            else
+                filepath = @"\\?\" + filepath;
+            return FindFirstFile(filepath, out filedata);
+        }
+
+
+        // Assume dirName passed in is already prefixed with \\?\
+
+        //public static List<string> FindFilesAndDirs(string dirName)
+        //{
+
+
+
+        //    List<string> results = new List<string>();
+
+        //    WIN32_FIND_DATA findData;
+
+        //    IntPtr findHandle = FindFirstFile(dirName + @"\*", out findData);
+
+
+
+        //    if(findHandle != INVALID_HANDLE_VALUE)
+        //    {
+
+        //        bool found;
+
+        //        do
+        //        {
+
+        //            string currentFileName = findData.cFileName;
+
+
+
+        //            // if this is a directory, find its contents
+
+        //            if(((int)findData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) != 0)
+        //            {
+
+        //                if(currentFileName != "." && currentFileName != "..")
+        //                {
+
+        //                    List<string> childResults = FindFilesAndDirs(Path.Combine(dirName, currentFileName));
+
+        //                    // add children and self to results
+
+        //                    results.AddRange(childResults);
+
+        //                    results.Add(Path.Combine(dirName, currentFileName));
+
+        //                }
+
+        //            }
+
+
+
+        //            // it's a file; add it to the results
+        //            else
+        //            {
+
+        //                results.Add(Path.Combine(dirName, currentFileName));
+
+        //            }
+
+
+
+        //            // find next
+
+        //            found = FindNextFile(findHandle, out findData);
+
+        //        }
+
+        //        while(found);
+
+        //    }
+
+
+
+        //    // close the find handle
+
+        //    FindClose(findHandle);
+
+        //    return results;
+
+        //}
 
     }
 }
