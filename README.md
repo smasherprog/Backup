@@ -11,7 +11,7 @@ Current Features:<br/>
     Get changes to NTFS volume<br/>
     <br/>
   NON-NTFS (Fallback):<br/>
-      Build mapping of all files and folders -- this is SLOW as all files and folders are indexed by manually traversing the       Volume. <br/>
+      Build mapping of all files and folders -- this is SLOW as all files and folders are indexed by manually traversing the       Volume. There are issues with this traversal method because many directories are longer than MAX_PATH so they cannot be traversed, also some folders require admin access and are skipped. In short, this is not a good method! <br/>
       Get changes to NTFS volume (Not implemented yet, but it will be slow when its done..) <br/>
 <br/>
 <br/>
