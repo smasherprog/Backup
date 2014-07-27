@@ -18,7 +18,7 @@ namespace Journal
         public string Name() { return _Name; } 
         public bool IsFile(){ return false; } 
         public bool IsFolder(){ return true; }
-
+        public UInt32 Changes { get { return 0; } }
         public NTFS_Root(string name)
         {
             Lookup = new Dictionary<ulong, Journal.Volume.IFile>();

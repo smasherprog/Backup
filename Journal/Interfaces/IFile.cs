@@ -15,5 +15,7 @@ namespace Journal.Volume
         bool IsFolder();
         int FileCount();
         int FolderCount();
+        UInt32 Changes { get; }
+
     }
 }

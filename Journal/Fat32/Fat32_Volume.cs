@@ -17,7 +17,7 @@ namespace Journal
 
         private Journal.Volume.IFile _Root;
         public Journal.Volume.IFile Root { get { return _Root; } }
-
+        public List<Journal.Volume.IFile> Changes { get { return new List<Journal.Volume.IFile>(); } }
         public Fat32Volume(DriveInfo rootpath)
         {
             _DriveInfo = rootpath;
@@ -33,6 +33,7 @@ namespace Journal
             Debug.WriteLine("Total Files Found: " + _Root.FileCount());
             Debug.WriteLine("Total Folders Found: " + _Root.FolderCount());
         }
+
         public void Dispose()
         {
         }

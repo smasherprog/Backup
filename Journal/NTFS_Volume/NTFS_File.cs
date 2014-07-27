@@ -18,6 +18,7 @@ namespace Journal.Volume
         private int _FolderCount = -1;
         public bool IsFile() { return Entry.IsFile; }
         public bool IsFolder() { return Entry.IsFolder; }
+        public UInt32 Changes { get { return Entry.Reason; } }
         public NTFS_File(Win32Api.UsnEntry u)
         {
             Entry = u;

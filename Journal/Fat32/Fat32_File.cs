@@ -16,6 +16,8 @@ namespace Journal
         public List<IFile> Children { get { return new List<IFile>(); }}
         public bool IsFile() { return true; }
         public bool IsFolder() { return false; }
+
+        public UInt32 Changes { get { return 0; } }
         public Fat32_File(FileInfo u, IFile parent)
         {
 

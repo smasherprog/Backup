@@ -11,5 +11,7 @@ namespace Journal.Interfaces
         void Map_Volume();
         System.IO.DriveInfo Drive { get;  }
         Journal.Volume.IFile Root { get; }
+        //Changes are the changes which have occured since the volume was created
+        List<Journal.Volume.IFile> Changes { get; }
     }
 }

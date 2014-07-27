@@ -13,7 +13,7 @@ namespace Journal
 {
     public class NTFSVolume : Journal.Interfaces.IVolume
     {
-        private readonly int BUF_LEN = 8192 + 8;//8 bytes for the leading USN
+
 
         private DriveInfo _DriveInfo;
         public System.IO.DriveInfo Drive { get { return _DriveInfo; } }
@@ -23,168 +23,30 @@ namespace Journal
         public Journal.Volume.IFile Root { get { return _Volume_Structure; } }
 
         private Win32Api.USN_JOURNAL_DATA _Current_JournalState;
-        //private Win32Api.USN_JOURNAL_DATA _Last_JournalState;
-
+        public List<Journal.Volume.IFile> Changes { get { return GetChanges(); } }
         public NTFSVolume(DriveInfo rootpath, SafeFileHandle root)
         {
             _DriveInfo = rootpath;
             _Root_Handle = root;
+            _Current_JournalState = new Win32Api.USN_JOURNAL_DATA();
             _Volume_Structure = new NTFS_Root(rootpath.Name);
-          
+            NTFS_Volume.NTFS_Functions.QueryUsnJournal(_Root_Handle, ref _Current_JournalState);//need to query the jounral to get the first usn number
         }
         public void Map_Volume()
         {
-            DateTime startTime = DateTime.Now;
-
-            QueryUsnJournal(ref _Current_JournalState);//need to query the jounral to get the first usn number
-
-            Win32Api.MFT_ENUM_DATA med;
-            med.StartFileReferenceNumber = 0;
-            med.LowUsn = 0;
-            med.HighUsn = _Current_JournalState.NextUsn;
-
-            using(var med_struct = new StructWrapper(med))
-            using(var rawdata = new Raw_Array_Wrapper(BUF_LEN))
+            if(NTFS_Volume.NTFS_Functions.Build_Volume_Mapping(_Root_Handle, _Current_JournalState, _Volume_Structure.Add))
             {
-                uint outBytesReturned = 0;
-
-                while(Win32Api.DeviceIoControl(
-                    _Root_Handle.DangerousGetHandle(),
-                    Win32Api.FSCTL_ENUM_USN_DATA,
-                    med_struct.Ptr,
-                    med_struct.Size,
-                    rawdata.Ptr,
-                    rawdata.Size,
-                    out outBytesReturned,
-                    IntPtr.Zero))
-                {
-                    outBytesReturned = outBytesReturned - sizeof(Int64);
-                    IntPtr pUsnRecord = System.IntPtr.Add(rawdata.Ptr, sizeof(Int64));//need to skip 8 bytes because the first 8 bytes are to a usn number, which isnt in the structure
-                    while(outBytesReturned > 60)
-                    {
-                        var usnEntry = new Win32Api.UsnEntry(pUsnRecord);
-                        pUsnRecord = System.IntPtr.Add(pUsnRecord, (int)usnEntry.RecordLength);
-                        _Volume_Structure.Add(usnEntry);
-                        if(usnEntry.RecordLength > outBytesReturned)
-                            outBytesReturned = 0;// prevent overflow
-                        else
-                            outBytesReturned -= usnEntry.RecordLength;
-                    }
-                    Marshal.WriteInt64(med_struct.Ptr, Marshal.ReadInt64(rawdata.Ptr, 0));//read the usn that we skipped and place it into the nextusn
-                }
-                var possiblerror = Marshal.GetLastWin32Error();
-                if(possiblerror < 0)
-                    throw new Win32Exception(possiblerror);
-            }
-
-            _Volume_Structure.Build();
-        }
-        private void QueryUsnJournal(ref Win32Api.USN_JOURNAL_DATA usnJournalState)
-        {
-            int sizeUsnJournalState = Marshal.SizeOf(usnJournalState);
-            UInt32 cb;
-            if(!Win32Api.DeviceIoControl(
-                   _Root_Handle.DangerousGetHandle(),
-                  Win32Api.FSCTL_QUERY_USN_JOURNAL,
-                  IntPtr.Zero,
-                  0,
-                  out usnJournalState,
-                  sizeUsnJournalState,
-                  out cb,
-                  IntPtr.Zero))
-            {
-                throw new Win32Exception(Marshal.GetLastWin32Error());
-
-            }
-
+                _Volume_Structure.Build();
+            }//else something went wrong and the build mapping will throw!
         }
 
-        public void GetUsnJournalEntries(Win32Api.USN_JOURNAL_DATA previousUsnState,
-            UInt32 reasonMask,
-            out List<Win32Api.UsnEntry> usnEntries,
-            out Win32Api.USN_JOURNAL_DATA newUsnState)
+
+        private List<Journal.Volume.IFile> GetChanges()
         {
 
-            usnEntries = new List<Win32Api.UsnEntry>();
-            newUsnState = new Win32Api.USN_JOURNAL_DATA();
+            var files = new List<Volume.IFile>();
+            var changes = NTFS_Volume.NTFS_Functions.Get_Changes(_Root_Handle, _Current_JournalState);
 
-            QueryUsnJournal(ref newUsnState);
-
-            Win32Api.READ_USN_JOURNAL_DATA rujd = new Win32Api.READ_USN_JOURNAL_DATA();
-            rujd.StartUsn = previousUsnState.NextUsn;
-            rujd.ReasonMask = reasonMask;
-            rujd.ReturnOnlyOnClose = 0;
-            rujd.Timeout = 0;
-            rujd.bytesToWaitFor = 0;
-            rujd.UsnJournalId = previousUsnState.UsnJournalID;
-
-            using(var med_struct = new StructWrapper(rujd))
-            using(var rawdata = new Raw_Array_Wrapper(BUF_LEN))
-            {
-                uint outBytesReturned = 0;
-                var nextusn = previousUsnState.NextUsn;
-                while(nextusn < newUsnState.NextUsn && Win32Api.DeviceIoControl(
-                         _Root_Handle.DangerousGetHandle(),
-                        Win32Api.FSCTL_READ_USN_JOURNAL,
-                        med_struct.Ptr,
-                        med_struct.Size,
-                        rawdata.Ptr,
-                        rawdata.Size,
-                        out outBytesReturned,
-                        IntPtr.Zero))
-                {
-                    outBytesReturned = outBytesReturned - sizeof(Int64);
-                    IntPtr pUsnRecord = System.IntPtr.Add(rawdata.Ptr, sizeof(Int64));//point safe arithmetic!~!!
-                    while(outBytesReturned > 60)   // while there are at least one entry in the usn journal
-                    {
-                        var usnEntry = new Win32Api.UsnEntry(pUsnRecord);
-                        if(usnEntry.USN > newUsnState.NextUsn)
-                            break;
-                        usnEntries.Add(usnEntry);
-                        pUsnRecord = System.IntPtr.Add(pUsnRecord, (int)usnEntry.RecordLength);//point safe arithmetic!~!!   
-                        outBytesReturned -= usnEntry.RecordLength;
-                    }
-                    nextusn = Marshal.ReadInt64(rawdata.Ptr, 0);
-                    Marshal.WriteInt64(med_struct.Ptr, nextusn);//read the usn that we skipped and place it into the nextusn
-                }
-            }
-
-        }
-
-        public void Dispose()
-        {
-            _Root_Handle.Dispose();
-        }
-
-        public void Begin()
-        {
-            QueryUsnJournal(ref _Current_JournalState);
-            Debug.WriteLine("Got Begin");
-        }
-        public void End()
-        {
-            uint reasonMask = Win32Api.USN_REASON_DATA_OVERWRITE |
-                   Win32Api.USN_REASON_DATA_EXTEND |
-                   Win32Api.USN_REASON_NAMED_DATA_OVERWRITE |
-                   Win32Api.USN_REASON_NAMED_DATA_TRUNCATION |
-                   Win32Api.USN_REASON_FILE_CREATE |
-                   Win32Api.USN_REASON_FILE_DELETE |
-                   Win32Api.USN_REASON_EA_CHANGE |
-                   Win32Api.USN_REASON_SECURITY_CHANGE |
-                   Win32Api.USN_REASON_RENAME_OLD_NAME |
-                   Win32Api.USN_REASON_RENAME_NEW_NAME |
-                   Win32Api.USN_REASON_INDEXABLE_CHANGE |
-                   Win32Api.USN_REASON_BASIC_INFO_CHANGE |
-                   Win32Api.USN_REASON_HARD_LINK_CHANGE |
-                   Win32Api.USN_REASON_COMPRESSION_CHANGE |
-                   Win32Api.USN_REASON_ENCRYPTION_CHANGE |
-                   Win32Api.USN_REASON_OBJECT_ID_CHANGE |
-                   Win32Api.USN_REASON_REPARSE_POINT_CHANGE |
-                   Win32Api.USN_REASON_STREAM_CHANGE |
-                   Win32Api.USN_REASON_CLOSE;
-            var changes = new List<Win32Api.UsnEntry>();
-            Win32Api.USN_JOURNAL_DATA newUsnState;
-            GetUsnJournalEntries(_Current_JournalState, reasonMask, out changes, out newUsnState);
             StringBuilder st = new StringBuilder();
 
             foreach(var item in changes)
@@ -193,9 +55,15 @@ namespace Journal
                 AddReasonData(st, item);
             }
             Debug.WriteLine("Changes " + changes.Count.ToString() + "  " + st.ToString());
+
+
+
+            return files;
+
+
         }
 
-        private void AddReasonData(StringBuilder sb, Win32Api.UsnEntry usnEntry)
+        private static void AddReasonData(StringBuilder sb, Win32Api.UsnEntry usnEntry)
         {
             sb.AppendFormat("\n  Reason Codes:");
             uint value = usnEntry.Reason & Win32Api.USN_REASON_DATA_OVERWRITE;
@@ -304,5 +172,10 @@ namespace Journal
                 sb.AppendFormat("\n     -CLOSE");
             }
         }
+        public void Dispose()
+        {
+            _Root_Handle.Dispose();
+        }
+
     }
 }

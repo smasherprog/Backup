@@ -17,6 +17,7 @@ namespace BackUp
         public Form1()
         {
             InitializeComponent();
+            this.FormClosing +=Form1_FormClosing;
         }
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
@@ -40,12 +41,18 @@ namespace BackUp
         {
             try
             {
+                if(_Volume != null)
+                {
+                    _Volume.Dispose();
+                    treeView1.Nodes.Clear();
+                }
+
                 _Volume = Journal.Journal_Factory.Create(path);
             } catch(Exception e)
             {
                 MessageBox.Show(e.Message);
             }
-           
+
         }
 
         private void GetDirs(List<Journal.Volume.IFile> files, TreeNode n)
@@ -100,20 +107,16 @@ namespace BackUp
             listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
         }
 
-        private void begToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            //if(NtfsJournal == null)
-            //    MessageBox.Show("You have not selected a drive yet.");
-            //else
-            //    NtfsJournal.Begin();
-        }
-
         private void endToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //if(NtfsJournal == null)
-            //    MessageBox.Show("You have not selected a drive yet.");
-            //else
-            //    NtfsJournal.End();
+            if(_Volume == null)
+                MessageBox.Show("You have not selected a drive yet.");
+            else
+            {
+                var change_files = _Volume.Changes;
+
+            }
+
         }
 
 

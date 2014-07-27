@@ -1,6 +1,7 @@
 ﻿using Microsoft.Win32.SafeHandles;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -89,6 +90,7 @@ namespace Journal
         private const UInt32 FILE_READ_ACCESS = 1;
         private const UInt32 FILE_WRITE_ACCESS = 2;
 
+        //goto http://msdn.microsoft.com/en-us/library/windows/desktop/aa365722%28v=vs.85%29.aspx  for the descriptions of below
         public const UInt32 USN_REASON_DATA_OVERWRITE = 0x00000001;
         public const UInt32 USN_REASON_DATA_EXTEND = 0x00000002;
         public const UInt32 USN_REASON_DATA_TRUNCATION = 0x00000004;

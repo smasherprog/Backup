@@ -20,6 +20,7 @@ namespace Journal
         private int _FolderCount = -1;
         public bool IsFile() { return false; }
         public bool IsFolder() { return true; }
+        public UInt32 Changes { get { return 0; } }
         public Fat32_Directory(DirectoryInfo u, IFile parent)
         {
             _FileCount = _FolderCount = -1;
