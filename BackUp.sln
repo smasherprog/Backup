@@ -1,11 +1,16 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.30501.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackUp", "BackUp\BackUp.csproj", "{E80D1390-6AFD-44D6-9DE5-CDF3CEC7AC2E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup_Presentation", "BackUp_Presentation\Backup_Presentation.csproj", "{E80D1390-6AFD-44D6-9DE5-CDF3CEC7AC2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Journal", "Journal\Journal.csproj", "{A633B6ED-7B0B-4819-8C29-4637D57997D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup_Service", "Backup_Service\Backup_Service.csproj", "{5F7EAAA0-6424-491C-AEE3-14960A6F2B4E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Backup_Model", "Backup_Model\Backup_Model.csproj", "{F351D734-6CE2-4C86-97BE-C3BF7A4E9096}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Utilities", "Utilities\Utilities.csproj", "{5439F022-A3AF-4F19-9727-B9267F91436A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +26,18 @@ Global
 		{A633B6ED-7B0B-4819-8C29-4637D57997D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A633B6ED-7B0B-4819-8C29-4637D57997D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A633B6ED-7B0B-4819-8C29-4637D57997D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F7EAAA0-6424-491C-AEE3-14960A6F2B4E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F7EAAA0-6424-491C-AEE3-14960A6F2B4E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F7EAAA0-6424-491C-AEE3-14960A6F2B4E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F7EAAA0-6424-491C-AEE3-14960A6F2B4E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F351D734-6CE2-4C86-97BE-C3BF7A4E9096}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F351D734-6CE2-4C86-97BE-C3BF7A4E9096}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F351D734-6CE2-4C86-97BE-C3BF7A4E9096}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F351D734-6CE2-4C86-97BE-C3BF7A4E9096}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5439F022-A3AF-4F19-9727-B9267F91436A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5439F022-A3AF-4F19-9727-B9267F91436A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5439F022-A3AF-4F19-9727-B9267F91436A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5439F022-A3AF-4F19-9727-B9267F91436A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

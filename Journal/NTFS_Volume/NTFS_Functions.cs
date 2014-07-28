@@ -31,6 +31,21 @@ namespace Journal.NTFS_Volume
 
             }
         }
+        public static SafeFileHandle GetRootHandle(System.IO.DriveInfo driveInfo)
+        {
+            string vol = string.Concat("\\\\.\\", driveInfo.Name.TrimEnd('\\'));
+            var handle = Win32Api.CreateFile(vol,
+                 Win32Api.GENERIC_READ | Win32Api.GENERIC_WRITE,
+                 Win32Api.FILE_SHARE_READ | Win32Api.FILE_SHARE_WRITE,
+                 IntPtr.Zero,
+                 Win32Api.OPEN_EXISTING,
+                 0,
+                 IntPtr.Zero);
+            if(handle.IsInvalid)
+                throw new Win32Exception(Marshal.GetLastWin32Error());
+            return handle;
+        }
+
         public static void GetUsnJournalEntries(SafeFileHandle roothandle, Win32Api.USN_JOURNAL_DATA previousUsnState,
             UInt32 reasonMask,
             out List<Win32Api.UsnEntry> usnEntries,

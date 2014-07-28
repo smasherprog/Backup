@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E80D1390-6AFD-44D6-9DE5-CDF3CEC7AC2E}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BackUp_Presentation</RootNamespace>
+    <AssemblyName>BackUp_Presentation</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BackUp.Program</StartupObject>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AboutBox1.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AboutBox1.Designer.cs">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Backup_Listing.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Backup_Listing.Designer.cs">
+      <DependentUpon>Backup_Listing.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Backup_Creation\Create_Backup.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Backup_Creation\Create_Backup.Designer.cs">
+      <DependentUpon>Create_Backup.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Code\NetworkDrive.cs" />
+    <Compile Include="Volume\Volume_Explorer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Volume\Volume_Explorer.Designer.cs">
+      <DependentUpon>Volume_Explorer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Volume\Select_Volume.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Volume\Select_Volume.Designer.cs">
+      <DependentUpon>Select_Volume.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Volume\Volume_Mapper.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Volume\Volume_Mapper.Designer.cs">
+      <DependentUpon>Volume_Mapper.cs</DependentUpon>
+    </Compile>
+    <EmbeddedResource Include="AboutBox1.resx">
+      <DependentUpon>AboutBox1.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Backup_Listing.resx">
+      <DependentUpon>Backup_Listing.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Backup_Creation\Create_Backup.resx">
+      <DependentUpon>Create_Backup.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Volume\Volume_Explorer.resx">
+      <DependentUpon>Volume_Explorer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+    </Compile>
+    <EmbeddedResource Include="Volume\Select_Volume.resx">
+      <DependentUpon>Select_Volume.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Volume\Volume_Mapper.resx">
+      <DependentUpon>Volume_Mapper.cs</DependentUpon>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Backup_Model\Backup_Model.csproj">
+      <Project>{f351d734-6ce2-4c86-97be-c3bf7a4e9096}</Project>
+      <Name>Backup_Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Backup_Service\Backup_Service.csproj">
+      <Project>{5f7eaaa0-6424-491c-aee3-14960a6f2b4e}</Project>
+      <Name>Backup_Service</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Journal\Journal.csproj">
+      <Project>{a633b6ed-7b0b-4819-8c29-4637d57997d7}</Project>
+      <Name>Journal</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Utilities\Utilities.csproj">
+      <Project>{5439f022-a3af-4f19-9727-b9267f91436a}</Project>
+      <Name>Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\play.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pause.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\stop.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

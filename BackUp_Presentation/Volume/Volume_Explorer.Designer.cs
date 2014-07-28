@@ -1,6 +1,6 @@
 ﻿namespace BackUp
 {
-    partial class Form1
+    partial class Volume_Explorer
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Volume_Explorer));
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.functionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.selectDriveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,6 +43,7 @@
             this.FolderCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.FileCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.volumeFinderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -53,7 +54,8 @@
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.functionsToolStripMenuItem});
+            this.functionsToolStripMenuItem,
+            this.volumeFinderToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(719, 24);
@@ -162,7 +164,14 @@
             // 
             this.Type.Text = "Type";
             // 
-            // Form1
+            // volumeFinderToolStripMenuItem
+            // 
+            this.volumeFinderToolStripMenuItem.Name = "volumeFinderToolStripMenuItem";
+            this.volumeFinderToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.volumeFinderToolStripMenuItem.Text = "Volume Finder";
+            this.volumeFinderToolStripMenuItem.Click += new System.EventHandler(this.volumeFinderToolStripMenuItem_Click);
+            // 
+            // Volume_Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -170,8 +179,8 @@
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "Volume_Explorer";
+            this.Text = "Volume Explorer";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
@@ -198,6 +207,7 @@
         private System.Windows.Forms.ColumnHeader Type;
         private System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectDriveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem volumeFinderToolStripMenuItem;
     }
 }
 

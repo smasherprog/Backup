@@ -60,6 +60,13 @@ namespace Journal
         }
 
 
+public const UInt32 SECURITY_ANONYMOUS     =     ( 0 << 16 );
+public const UInt32 SECURITY_IDENTIFICATION  =   ( 1 << 16 );
+public const UInt32 SECURITY_IMPERSONATION   =   ( 2 << 16 );
+public const UInt32 SECURITY_DELEGATION      =   ( 3 << 16 );
+
+public const UInt32 SECURITY_CONTEXT_TRACKING = 0x00040000;
+public const UInt32 SECURITY_EFFECTIVE_ONLY  =  0x00080000;
 
 
         public const UInt32 GENERIC_READ = 0x80000000;

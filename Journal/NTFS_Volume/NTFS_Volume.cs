@@ -24,10 +24,10 @@ namespace Journal
 
         private Win32Api.USN_JOURNAL_DATA _Current_JournalState;
         public List<Journal.Volume.IFile> Changes { get { return GetChanges(); } }
-        public NTFSVolume(DriveInfo rootpath, SafeFileHandle root)
+        public NTFSVolume(DriveInfo rootpath)
         {
             _DriveInfo = rootpath;
-            _Root_Handle = root;
+            _Root_Handle = NTFS_Volume.NTFS_Functions.GetRootHandle(rootpath);
             _Current_JournalState = new Win32Api.USN_JOURNAL_DATA();
             _Volume_Structure = new NTFS_Root(rootpath.Name);
             NTFS_Volume.NTFS_Functions.QueryUsnJournal(_Root_Handle, ref _Current_JournalState);//need to query the jounral to get the first usn number

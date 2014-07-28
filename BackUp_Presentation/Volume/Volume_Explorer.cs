@@ -11,13 +11,15 @@ using System.Windows.Forms;
 
 namespace BackUp
 {
-    public partial class Form1 : Form
+    public partial class Volume_Explorer : Form
     {
         Journal.Interfaces.IVolume _Volume;
-        public Form1()
+        List<Utilities.NetworkDrive> ManuallyMappedDrives;
+        public Volume_Explorer()
         {
             InitializeComponent();
-            this.FormClosing +=Form1_FormClosing;
+            ManuallyMappedDrives = new List<Utilities.NetworkDrive>();
+            this.FormClosing += Form1_FormClosing;
         }
         private void Form1_FormClosing(Object sender, FormClosingEventArgs e)
         {
@@ -31,11 +33,16 @@ namespace BackUp
         }
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            _Volume.Map_Volume();
-            TreeNode rootNode = new TreeNode(_Volume.Drive.Name);
-            rootNode.Tag = _Volume.Root;
-            GetDirs(_Volume.Root.Children, rootNode);
-            treeView1.Nodes.Add(rootNode);
+            if(_Volume == null)
+                MessageBox.Show("You have not selected a drive yet.");
+            else
+            {
+                _Volume.Map_Volume();
+                TreeNode rootNode = new TreeNode(_Volume.Drive.Name);
+                rootNode.Tag = _Volume.Root;
+                GetDirs(_Volume.Root.Children, rootNode);
+                treeView1.Nodes.Add(rootNode);
+            }
         }
         private void Selected_Drive(string path)
         {
@@ -46,8 +53,11 @@ namespace BackUp
                     _Volume.Dispose();
                     treeView1.Nodes.Clear();
                 }
-
-                _Volume = Journal.Journal_Factory.Create(path);
+                var f = ManuallyMappedDrives.FirstOrDefault();
+            
+                    _Volume = Journal.Journal_Factory.Create(path);
+                
+               
             } catch(Exception e)
             {
                 MessageBox.Show(e.Message);
@@ -118,6 +128,13 @@ namespace BackUp
             }
 
         }
+
+        private void volumeFinderToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var f = new BackUp_Presentation.Volume.Volume_Mapper(ManuallyMappedDrives.Add);
+            f.Show();
+        }
+
 
 
 
