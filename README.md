@@ -19,11 +19,11 @@ To see the program work, download the code. Start Visual Studio as Administrator
 Run in Visual Studio in Debug so you can see the debug output.<br/>
 <br/>
 BUILD FILE/FOLDER MAPPING<br/>
-Goto Functions Drop Down -> Select a Drive  (and select a drive)<br/>
-Goto Functions Drop Down -> Build (this will take about a second and build a tree structure that can be traversed)<br/>
+Goto Volume Explorer -> Functions Drop Down -> Select a Drive  (and select a drive)<br/>
+Goto Volume Explorer -> Functions Drop Down -> Build (this will take about a second and build a tree structure that can be traversed)<br/>
 <br/>
 GET CHANGES<br/>
-Goto Functions Drop Down -> Select a Drive  (and select a drive)<br/>
+Goto Volume Explorer -> Functions Drop Down -> Select a Drive  (and select a drive)<br/>
 Goto the Drive you selected and make some changes to it: Add a file, Delete a file, etc<br/>
 Goto Functions Drop Down -> Get Dif<br/>
 You will see a list of the changes that have occured on the volume as the OS sees them. . .<br/>
