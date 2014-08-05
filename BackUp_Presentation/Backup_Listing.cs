@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -75,17 +76,58 @@ namespace BackUp_Presentation
                 item.SubItems.AddRange(subItems);
                 listView1.Items.Add(item);
             }
-            if(listView1.Items.Count <= 0)
-                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-            else
-                listView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-        }
+         }
         private void aboutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var a = new AboutBox1();
             a.Show();
         }
 
+        private void Play_Click(object sender, EventArgs e)
+        {
+            if(listView1.SelectedItems.Count > 0)
+            {
+                var name = listView1.SelectedItems[0].Text.ToLower();
+                var found = Backups.FirstOrDefault(a => a.Name == name);
+                if(found != null)
+                {
+                    found.Do_Backup();
+                }
+            }
+        }
+
+        private void getDifToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(listView1.SelectedItems.Count > 0)
+            {
+                var name = listView1.SelectedItems[0].Text.ToLower();
+                var found = Backups.FirstOrDefault(a => a.Name == name);
+                if(found != null)
+                {
+                    var old = found.Vol.Refresh();
+                    foreach(var item in found.Vol.Update(old))
+                    {
+                        Debug.WriteLine(item.Name);
+
+                    }
+                }
+            }
+        }
+
+        private void refreshToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(listView1.SelectedItems.Count > 0)
+            {
+                var name = listView1.SelectedItems[0].Text.ToLower();
+                var found = Backups.FirstOrDefault(a => a.Name == name);
+                if(found != null)
+                {
+                    found.Vol.Refresh();
+                }
+            }
+        }
+
+ 
 
     }
 }

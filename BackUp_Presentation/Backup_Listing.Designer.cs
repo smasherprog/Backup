@@ -40,8 +40,14 @@
             this.Play = new System.Windows.Forms.ToolStripMenuItem();
             this.Stop = new System.Windows.Forms.ToolStripMenuItem();
             this.Pause = new System.Windows.Forms.ToolStripMenuItem();
+            this.getDifToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.refreshToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -52,7 +58,7 @@
             this.aboutToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(284, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(956, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -87,10 +93,10 @@
             this.listView1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listView1.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.listView1.FullRowSelect = true;
-            this.listView1.Location = new System.Drawing.Point(0, 24);
+            this.listView1.Location = new System.Drawing.Point(0, 0);
             this.listView1.MultiSelect = false;
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(284, 238);
+            this.listView1.Size = new System.Drawing.Size(447, 665);
             this.listView1.TabIndex = 1;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -98,49 +104,83 @@
             // Backup_Name
             // 
             this.Backup_Name.Text = "Backup Name";
-            this.Backup_Name.Width = 76;
+            this.Backup_Name.Width = 210;
             // 
             // Last_Ran
             // 
             this.Last_Ran.Text = "Last Ran";
-            this.Last_Ran.Width = 74;
+            this.Last_Ran.Width = 214;
             // 
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.Play,
             this.Stop,
-            this.Pause});
+            this.Pause,
+            this.getDifToolStripMenuItem,
+            this.refreshToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(106, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(114, 114);
             // 
             // Play
             // 
             this.Play.Image = global::BackUp_Presentation.Properties.Resources.play;
             this.Play.Name = "Play";
-            this.Play.Size = new System.Drawing.Size(152, 22);
+            this.Play.Size = new System.Drawing.Size(113, 22);
             this.Play.Text = "Start";
+            this.Play.Click += new System.EventHandler(this.Play_Click);
             // 
             // Stop
             // 
             this.Stop.Image = global::BackUp_Presentation.Properties.Resources.stop;
             this.Stop.Name = "Stop";
-            this.Stop.Size = new System.Drawing.Size(152, 22);
+            this.Stop.Size = new System.Drawing.Size(113, 22);
             this.Stop.Text = "Stop";
             // 
             // Pause
             // 
             this.Pause.Image = global::BackUp_Presentation.Properties.Resources.pause;
             this.Pause.Name = "Pause";
-            this.Pause.Size = new System.Drawing.Size(152, 22);
+            this.Pause.Size = new System.Drawing.Size(113, 22);
             this.Pause.Text = "Pause";
+            // 
+            // getDifToolStripMenuItem
+            // 
+            this.getDifToolStripMenuItem.Name = "getDifToolStripMenuItem";
+            this.getDifToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.getDifToolStripMenuItem.Text = "Get Dif";
+            this.getDifToolStripMenuItem.Click += new System.EventHandler(this.getDifToolStripMenuItem_Click);
+            // 
+            // refreshToolStripMenuItem
+            // 
+            this.refreshToolStripMenuItem.Name = "refreshToolStripMenuItem";
+            this.refreshToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.refreshToolStripMenuItem.Text = "Refresh";
+            this.refreshToolStripMenuItem.Click += new System.EventHandler(this.refreshToolStripMenuItem_Click);
+            // 
+            // splitContainer1
+            // 
+            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.splitContainer1.Name = "splitContainer1";
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.listView1);
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.BackColor = System.Drawing.Color.White;
+            this.splitContainer1.Size = new System.Drawing.Size(956, 665);
+            this.splitContainer1.SplitterDistance = 447;
+            this.splitContainer1.TabIndex = 2;
             // 
             // Backup_Listing
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(284, 262);
-            this.Controls.Add(this.listView1);
+            this.ClientSize = new System.Drawing.Size(956, 689);
+            this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.menuStrip1);
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Backup_Listing";
@@ -148,6 +188,9 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.contextMenuStrip1.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -166,5 +209,8 @@
         private System.Windows.Forms.ToolStripMenuItem Play;
         private System.Windows.Forms.ToolStripMenuItem Stop;
         private System.Windows.Forms.ToolStripMenuItem Pause;
+        private System.Windows.Forms.ToolStripMenuItem getDifToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem refreshToolStripMenuItem;
+        private System.Windows.Forms.SplitContainer splitContainer1;
     }
 }

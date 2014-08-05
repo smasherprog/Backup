@@ -13,7 +13,7 @@ namespace BackUp
 {
     public partial class Volume_Explorer : Form
     {
-        Journal.Interfaces.IVolume _Volume;
+         Journal.NTFSVolume _Volume;
         List<Utilities.NetworkDrive> ManuallyMappedDrives;
         public Volume_Explorer()
         {
@@ -38,7 +38,7 @@ namespace BackUp
             else
             {
                 _Volume.Map_Volume();
-                TreeNode rootNode = new TreeNode(_Volume.Drive.Name);
+                TreeNode rootNode = new TreeNode(_Volume.Root.Name);
                 rootNode.Tag = _Volume.Root;
                 GetDirs(_Volume.Root.Children, rootNode);
                 treeView1.Nodes.Add(rootNode);
@@ -60,17 +60,19 @@ namespace BackUp
                
             } catch(Exception e)
             {
-                MessageBox.Show(e.Message);
+                if(e.Message.ToLower() == "access is denied")
+                    MessageBox.Show("You must run this program as an administrator to access that functionality.");
+                else  MessageBox.Show(e.Message);
             }
 
         }
 
-        private void GetDirs(List<Journal.Volume.IFile> files, TreeNode n)
+        private void GetDirs(List<Journal.Volume.NTFS_File> files, TreeNode n)
         {
             TreeNode aNode;
-            foreach(var subDir in files.Where(a => a.IsFolder()))
+            foreach(var subDir in files.Where(a => a.IsFolder))
             {
-                aNode = new TreeNode(subDir.Name(), 0, 0);
+                aNode = new TreeNode(subDir.Name, 0, 0);
                 aNode.Tag = subDir;
                 aNode.ImageKey = "folder";
                 var subSubDirs = subDir.Children;
@@ -85,13 +87,13 @@ namespace BackUp
         {
             TreeNode newSelected = e.Node;
             listView1.Items.Clear();
-            var nodeDirInfo = (Journal.Volume.IFile)newSelected.Tag;
+            var nodeDirInfo = (Journal.Volume.NTFS_File)newSelected.Tag;
             ListViewItem.ListViewSubItem[] subItems;
             ListViewItem item = null;
 
-            foreach(var dir in nodeDirInfo.Children.Where(a => a.IsFolder()))
+            foreach(var dir in nodeDirInfo.Children.Where(a => a.IsFolder))
             {
-                item = new ListViewItem(dir.Name(), 0);
+                item = new ListViewItem(dir.Name, 0);
                 subItems = new ListViewItem.ListViewSubItem[]
                 {
                         new ListViewItem.ListViewSubItem(item, dir.FolderCount().ToString()),
@@ -101,9 +103,9 @@ namespace BackUp
                 item.SubItems.AddRange(subItems);
                 listView1.Items.Add(item);
             }
-            foreach(var file in nodeDirInfo.Children.Where(a => a.IsFile()))
+            foreach(var file in nodeDirInfo.Children.Where(a => a.IsFile))
             {
-                item = new ListViewItem(file.Name(), 1);
+                item = new ListViewItem(file.Name, 1);
                 subItems = new ListViewItem.ListViewSubItem[]
                 {
                         new ListViewItem.ListViewSubItem(item, file.FolderCount().ToString()),
@@ -123,7 +125,8 @@ namespace BackUp
                 MessageBox.Show("You have not selected a drive yet.");
             else
             {
-                var change_files = _Volume.Changes;
+                var old = _Volume.Refresh();
+                var change_files = _Volume.Update(old);
 
             }
 

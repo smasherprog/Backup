@@ -35,6 +35,7 @@
             this.selectDriveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.endToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.volumeFinderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.treeView1 = new System.Windows.Forms.TreeView();
             this.imageList1 = new System.Windows.Forms.ImageList(this.components);
@@ -43,7 +44,7 @@
             this.FolderCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.FileCount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.Type = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.volumeFinderToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -75,23 +76,30 @@
             // selectDriveToolStripMenuItem
             // 
             this.selectDriveToolStripMenuItem.Name = "selectDriveToolStripMenuItem";
-            this.selectDriveToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.selectDriveToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.selectDriveToolStripMenuItem.Text = "Select Drive";
             this.selectDriveToolStripMenuItem.Click += new System.EventHandler(this.selectDriveToolStripMenuItem_Click);
             // 
             // endToolStripMenuItem
             // 
             this.endToolStripMenuItem.Name = "endToolStripMenuItem";
-            this.endToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.endToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.endToolStripMenuItem.Text = "Get Dif";
             this.endToolStripMenuItem.Click += new System.EventHandler(this.endToolStripMenuItem_Click);
             // 
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
             this.startToolStripMenuItem.Text = "Build";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // volumeFinderToolStripMenuItem
+            // 
+            this.volumeFinderToolStripMenuItem.Name = "volumeFinderToolStripMenuItem";
+            this.volumeFinderToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
+            this.volumeFinderToolStripMenuItem.Text = "Volume Finder";
+            this.volumeFinderToolStripMenuItem.Click += new System.EventHandler(this.volumeFinderToolStripMenuItem_Click);
             // 
             // splitContainer1
             // 
@@ -164,13 +172,6 @@
             // 
             this.Type.Text = "Type";
             // 
-            // volumeFinderToolStripMenuItem
-            // 
-            this.volumeFinderToolStripMenuItem.Name = "volumeFinderToolStripMenuItem";
-            this.volumeFinderToolStripMenuItem.Size = new System.Drawing.Size(96, 20);
-            this.volumeFinderToolStripMenuItem.Text = "Volume Finder";
-            this.volumeFinderToolStripMenuItem.Click += new System.EventHandler(this.volumeFinderToolStripMenuItem_Click);
-            // 
             // Volume_Explorer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -208,6 +209,7 @@
         private System.Windows.Forms.ToolStripMenuItem endToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem selectDriveToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem volumeFinderToolStripMenuItem;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

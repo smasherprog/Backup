@@ -128,21 +128,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Backup_Model\Backup_Model.csproj">
-      <Project>{f351d734-6ce2-4c86-97be-c3bf7a4e9096}</Project>
-      <Name>Backup_Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Backup_Service\Backup_Service.csproj">
-      <Project>{5f7eaaa0-6424-491c-aee3-14960a6f2b4e}</Project>
-      <Name>Backup_Service</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Journal\Journal.csproj">
       <Project>{a633b6ed-7b0b-4819-8c29-4637d57997d7}</Project>
       <Name>Journal</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Utilities\Utilities.csproj">
-      <Project>{5439f022-a3af-4f19-9727-b9267f91436a}</Project>
-      <Name>Utilities</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

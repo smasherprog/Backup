@@ -30,19 +30,22 @@ namespace BackUp
                 {
                     driveformat = item.DriveFormat;
 
-                } catch (Exception e)
+                } catch(Exception e)
                 {
                     Debug.WriteLine(e.Message);
                     driveformat = "Unknown";
                 }
-                var subItems = new ListViewItem.ListViewSubItem[]
+                if(driveformat.ToLower().Contains("ntfs"))
+                {
+                    var subItems = new ListViewItem.ListViewSubItem[]
                 {
                         new ListViewItem.ListViewSubItem(lisit, driveformat),
                         new ListViewItem.ListViewSubItem(lisit, item.DriveType.ToString()),
                         new ListViewItem.ListViewSubItem(lisit, item.IsReady.ToString()),
                 };
-                lisit.SubItems.AddRange(subItems);
-                listView1.Items.Add(lisit);
+                    lisit.SubItems.AddRange(subItems);
+                    listView1.Items.Add(lisit);
+                }
             }
             this.Height = listView1.PreferredSize.Height + this.PreferredSize.Height;
 

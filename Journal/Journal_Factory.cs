@@ -13,17 +13,10 @@ namespace Journal
 {
     public static class Journal_Factory
     {
-        public static Journal.Interfaces.IVolume Create(string drive)
+        public static NTFSVolume Create(string fullpath)
         {
-            DriveInfo driveInfo = new DriveInfo(drive);
-            var e = Environment.GetLogicalDrives();
-            if(driveInfo.DriveFormat.ToLower().Contains("ntfs"))
-            {
-                return new NTFSVolume(driveInfo);
-            } else
-                return new Fat32Volume(driveInfo);
-
+            return new NTFSVolume(fullpath.Substring(0, 1));
+  
         }
-
     }
 }

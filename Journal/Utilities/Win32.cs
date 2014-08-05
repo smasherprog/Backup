@@ -211,6 +211,7 @@ public const UInt32 SECURITY_EFFECTIVE_ONLY  =  0x00080000;
             public uint FileIndexLow;
         }
 
+        [Serializable]
         [StructLayout(LayoutKind.Sequential, Pack = 0)]
         public struct USN_JOURNAL_DATA
         {
@@ -267,7 +268,7 @@ public const UInt32 SECURITY_EFFECTIVE_ONLY  =  0x00080000;
 
             public UInt64 ParentFileReferenceNumber { get; private set; }
 
-            public UInt32 Reason { get; private set; }
+            public UInt32 Reason { get; set; }
             public string Name { get; private set; }
 
             private UInt32 _fileAttributes;
@@ -292,6 +293,16 @@ public const UInt32 SECURITY_EFFECTIVE_ONLY  =  0x00080000;
                 var ptr_to_name = System.IntPtr.Add(ptrToUsnRecord, fileNameOffset);
 
                 Name = Marshal.PtrToStringUni(ptr_to_name, fileNameLength / sizeof(char));
+            }
+            public UsnEntry(string name)
+            {
+                RecordLength = 0;
+                FileReferenceNumber = 0;
+                ParentFileReferenceNumber = 0;
+                USN = 0;
+                Reason = 0;
+                _fileAttributes = 0;
+                Name = name;
             }
         }
 
