@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Journal
 {
-   
+
     public class NTFSVolume
     {
         private Dictionary<UInt64, Journal.Volume.NTFS_File> Lookup;
@@ -30,12 +30,21 @@ namespace Journal
             Lookup = new Dictionary<ulong, Journal.Volume.NTFS_File>();
             NTFS_Volume.NTFS_Functions.QueryUsnJournal(_Root_Handle, ref _Current_JournalState);//need to query the jounral to get the first usn number
         }
+        public NTFSVolume(string drive, Win32Api.USN_JOURNAL_DATA lastusn)
+        {
+            var rootpath = new DriveInfo(drive);
+            _Root_Handle = NTFS_Volume.NTFS_Functions.GetRootHandle(rootpath);
+            _Root = new Volume.NTFS_File(new Win32Api.UsnEntry(rootpath.Name.Replace("\\", "")));
+            Lookup = new Dictionary<ulong, Journal.Volume.NTFS_File>();
+            _Current_JournalState = lastusn;
+
+        }
         public void Map_Volume()
         {
             Lookup = new Dictionary<ulong, Volume.NTFS_File>();
             if(NTFS_Volume.NTFS_Functions.Build_Volume_Mapping(_Root_Handle, _Current_JournalState, Add))
             {
-              
+
                 Debug.WriteLine("Starting Lookup");
                 var start = DateTime.Now;
                 int foldercounter = 0;
@@ -92,23 +101,6 @@ namespace Journal
             }
             return r;
         }
-        private void RemoveChildren(Journal.Volume.NTFS_File f)
-        {
-            foreach(Journal.Volume.NTFS_File item in f.Children)
-            {
-                RemoveChildren(item);
-                Lookup.Remove(item.Entry.FileReferenceNumber);
-            }
-        }
-
-        private void Delete(ulong filereferencenumber)
-        {
-            Journal.Volume.NTFS_File f = null;
-            Lookup.TryGetValue(filereferencenumber, out f);
-            if(f != null)
-                f.Delete();
-            Lookup.Remove(filereferencenumber);
-        }
         public List<Journal.Volume.NTFS_File> Update(Win32Api.USN_JOURNAL_DATA last)
         {
             var files = new List<Journal.Volume.NTFS_File>();
@@ -127,86 +119,88 @@ namespace Journal
         private void Update(Journal.Volume.NTFS_File original, Win32Api.UsnEntry usnEntry)
         {
             original.Entry.Reason = usnEntry.Reason;
-            // original.Entry.Reason = usnEntry;
-            uint value = usnEntry.Reason &
-                (Win32Api.USN_REASON_DATA_OVERWRITE |
-                Win32Api.USN_REASON_DATA_EXTEND |
-                Win32Api.USN_REASON_DATA_TRUNCATION |
-                Win32Api.USN_REASON_NAMED_DATA_OVERWRITE |
-                Win32Api.USN_REASON_NAMED_DATA_EXTEND |
-                Win32Api.USN_REASON_NAMED_DATA_TRUNCATION |
-                Win32Api.USN_REASON_FILE_DELETE);
-            var sb = new StringBuilder();
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -FILE DELETE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_EA_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -EA CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_SECURITY_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -SECURITY CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_RENAME_OLD_NAME;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -RENAME OLD NAME");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_RENAME_NEW_NAME;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -RENAME NEW NAME");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_INDEXABLE_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -INDEXABLE CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_BASIC_INFO_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -BASIC INFO CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_HARD_LINK_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -HARD LINK CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_COMPRESSION_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -COMPRESSION CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_ENCRYPTION_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -ENCRYPTION CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_OBJECT_ID_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -OBJECT ID CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_REPARSE_POINT_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -REPARSE POINT CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_STREAM_CHANGE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -STREAM CHANGE");
-            }
-            value = usnEntry.Reason & Win32Api.USN_REASON_CLOSE;
-            if(0 != value)
-            {
-                sb.AppendFormat("\n     -CLOSE");
-            }
-            Debug.WriteLine("Changes " + sb.ToString());
+            Debug.WriteLine("Marking '" + original.Name + "' as dirty ");
+            //return;
+            //// original.Entry.Reason = usnEntry;
+            //uint value = usnEntry.Reason &
+            //    (Win32Api.USN_REASON_DATA_OVERWRITE |
+            //    Win32Api.USN_REASON_DATA_EXTEND |
+            //    Win32Api.USN_REASON_DATA_TRUNCATION |
+            //    Win32Api.USN_REASON_NAMED_DATA_OVERWRITE |
+            //    Win32Api.USN_REASON_NAMED_DATA_EXTEND |
+            //    Win32Api.USN_REASON_NAMED_DATA_TRUNCATION |
+            //    Win32Api.USN_REASON_FILE_DELETE);
+            //var sb = new StringBuilder();
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -FILE DELETE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_EA_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -EA CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_SECURITY_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -SECURITY CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_RENAME_OLD_NAME;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -RENAME OLD NAME");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_RENAME_NEW_NAME;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -RENAME NEW NAME");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_INDEXABLE_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -INDEXABLE CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_BASIC_INFO_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -BASIC INFO CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_HARD_LINK_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -HARD LINK CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_COMPRESSION_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -COMPRESSION CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_ENCRYPTION_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -ENCRYPTION CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_OBJECT_ID_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -OBJECT ID CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_REPARSE_POINT_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -REPARSE POINT CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_STREAM_CHANGE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -STREAM CHANGE");
+            //}
+            //value = usnEntry.Reason & Win32Api.USN_REASON_CLOSE;
+            //if(0 != value)
+            //{
+            //    sb.AppendFormat("\n     -CLOSE");
+            //}
+            //Debug.WriteLine("Changes " + sb.ToString());
         }
         public void Dispose()
         {

@@ -42,7 +42,6 @@
     <Compile Include="Backup.cs" />
     <Compile Include="BackUp_Manager.cs" />
     <Compile Include="Utilities\BinarySerialization.cs" />
-    <Compile Include="Journal_Factory.cs" />
     <Compile Include="NTFS_Volume\NTFS_Functions.cs" />
     <Compile Include="NTFS_Volume\NTFS_Volume.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

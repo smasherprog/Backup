@@ -35,7 +35,7 @@ namespace Backup_Model
             _DestnationPath = destinationpath;
             LastBackup = DateTime.MinValue;
             Increment = 0;
-            Vol = Journal.Journal_Factory.Create(SourcePath);
+            Init_Volume();
         }
         public static bool ValidatePath(string path)
         {
@@ -53,10 +53,22 @@ namespace Backup_Model
                 return false;
             }
         }
+        private void Init_Volume(){
+            if(Vol == null)
+            {
+                if(_LastJournal.NextUsn != 0)
+                {
+                    Vol = new NTFSVolume(SourcePath.Substring(0, 1), _LastJournal);
 
+                } else
+                {
+                    Vol = new NTFSVolume(SourcePath.Substring(0, 1));
+                }
+            }
+        }
         public void Do_Backup()
         {
-            if(Vol == null) Vol = Journal.Journal_Factory.Create(SourcePath);
+            Init_Volume();
             
             _LastJournal = Vol.Refresh();
             Vol.Map_Volume();

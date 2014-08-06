@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,15 +64,18 @@ namespace Journal.Volume
                 try{
                     if(Entry.Reason != 0)
                     {//DIRTY, update from REAL SOURCE
+                        Debug.WriteLine("File Dirty, using NON-Local Copy of " + Name);
                         System.IO.File.Copy(FullName, System.IO.Path.Combine(dst_base_path, Name));
                     } else
                     {//try and use the local copy 
                         var trysrc = System.IO.Path.Combine(source_path, Name);
                         if(System.IO.File.Exists(trysrc))
                         {
+                            Debug.WriteLine("Using Local Copy of " + Name);
                             System.IO.File.Copy(trysrc, System.IO.Path.Combine(dst_base_path, Name));
                         } else
                         {
+                            Debug.WriteLine("Using NON-Local Copy of " + Name);
                             System.IO.File.Copy(FullName, System.IO.Path.Combine(dst_base_path, Name));
                         }
                     }

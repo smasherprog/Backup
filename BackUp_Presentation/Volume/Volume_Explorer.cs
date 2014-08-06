@@ -54,10 +54,8 @@ namespace BackUp
                     treeView1.Nodes.Clear();
                 }
                 var f = ManuallyMappedDrives.FirstOrDefault();
-            
-                    _Volume = Journal.Journal_Factory.Create(path);
-                
-               
+                _Volume = new Journal.NTFSVolume(path.Substring(0, 1));
+ 
             } catch(Exception e)
             {
                 if(e.Message.ToLower() == "access is denied")
